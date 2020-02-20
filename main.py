@@ -10,7 +10,7 @@ import time
 import threading
 import identify
 import multiprocessing
-
+import sys
 image = bytes()
 img_cnt = 0
 lock = multiprocessing.Lock()
