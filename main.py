@@ -2,7 +2,7 @@
 @Author: Firefly
 @Date: 2020-02-20 14:39:48
 @Descripttion: 
-@LastEditTime: 2020-02-20 16:38:23
+@LastEditTime: 2020-02-20 16:59:04
 '''
 
 import get_image
@@ -18,6 +18,8 @@ lock = multiprocessing.Lock()
 
 class TrackingProcess(threading.Thread):
     name = "process"
+    info = list()
+    
     def __init__(self, *args, **kwargs):
         super(TrackingProcess, self).__init__(*args, **kwargs)
         self.__flag = threading.Event()     # 用于暂停线程的标识
@@ -27,6 +29,9 @@ class TrackingProcess(threading.Thread):
 
     def setName(self,name):
         self.name = name + str(img_cnt)
+
+    def addInfo(self, info):
+        self.info.append(info)
 
     def getImage(self):
         return image  # 那全局变量的图片
@@ -73,20 +78,24 @@ def tracking(locations, img_cnt):
     
     visited = list()
     cnt_loc = 0
-    for loc in locations:    # 对于每一个识别出来的图片
+    for loc in locations:    # 对于每一个识别出来的车的位置
         print("width: " + str(loc[2] - loc[0]) + " height: " + str(loc[3] - loc[1]))
-        for li in process_list: # 查找有没有进程在处理这张图片
+        for li in process_list: # 查找有没有进程在处理这辆车
             if(True): # 如果是同一时间（cnt） 同同一地址， 这张是之前已经加入process 的了
-                break
                 visited.append(1)
+                break
             else :
                 visited.append(0) 
         cnt_loc = cnt_loc + 1;
 
+    cnt_loc = 0
     for flag in visited:
         if flag == 0:
             temp_thread = TrackingProcess()
             temp_thread.setName(img_cnt)
+            
+            # 把 img cnt 和 车位置 加入
+            temp_thread.add_info([img_cnt, locations[cnt_loc]]) 
             temp_thread.start() # 线程里面跟踪不到了就去自动停止， 内部实现
             process_list.append(temp_thread) # 将进程加入 列表
     
