@@ -2,7 +2,7 @@
 @Author: Firefly
 @Date: 2020-02-20 14:39:48
 @Descripttion: 
-@LastEditTime: 2020-02-20 17:00:06
+@LastEditTime: 2020-02-20 22:51:34
 '''
 
 import get_image
@@ -19,6 +19,8 @@ lock = multiprocessing.Lock()
 class TrackingProcess(threading.Thread):
     name = "process"
     info = list()
+    
+    df
     
     def __init__(self, *args, **kwargs):
         super(TrackingProcess, self).__init__(*args, **kwargs)
