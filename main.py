@@ -2,7 +2,7 @@
 @Author: Firefly
 @Date: 2020-02-20 14:39:48
 @Descripttion: 
-@LastEditTime: 2020-02-20 16:59:04
+@LastEditTime: 2020-02-20 17:00:06
 '''
 
 import get_image
@@ -98,7 +98,7 @@ def tracking(locations, img_cnt):
             temp_thread.add_info([img_cnt, locations[cnt_loc]]) 
             temp_thread.start() # 线程里面跟踪不到了就去自动停止， 内部实现
             process_list.append(temp_thread) # 将进程加入 列表
-    
+        cnt_loc cnt_loc + 1;
 
 def main():
     # 不可控， 会一直接受图片
