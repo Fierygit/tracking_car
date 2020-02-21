@@ -2,7 +2,9 @@
 @Author: Firefly
 @Date: 2020-02-20 14:39:48
 @Descripttion: 
+
 @LastEditTime: 2020-02-20 22:51:34
+
 '''
 
 import get_image
@@ -18,7 +20,9 @@ lock = multiprocessing.Lock()
 
 class TrackingProcess(threading.Thread):
     name = "process"
+    # 数据格式：  [[img_cnt, [x1,y1,x2,y2]],  ....]
     info = list()
+    first_img = bytes()
     
     df
     
@@ -35,19 +39,26 @@ class TrackingProcess(threading.Thread):
     def addInfo(self, info):
         self.info.append(info)
 
+    def getInfo(self, info):
+        return self.info
+
     def getImage(self):
-        return image  # 那全局变量的图片
+        return image  # 拿全局变量的图片
 
     def run(self):
+        
         while self.__running.isSet():
             self.__flag.wait()      # 为True时立即返回, 为False时阻塞直到内部的标识位为True后返回
             
             # 调用真正的  里面不要再用  while 循环， 最后一行的 sleep 控制速率
             # 处理一张， 就重新获取一张图片
             # tracking(self.getImage())
-
-            print("tracking process: " + self.name + " is running!")
+            print("a")
+            tracking(image, info[1])
+            info1 =  tack.update()
             
+            print("tracking process: " + self.name + " is running!")
+            self.stop()
             time.sleep(1)
 
     def pause(self):
@@ -82,13 +93,27 @@ def tracking(locations, img_cnt):
     cnt_loc = 0
     for loc in locations:    # 对于每一个识别出来的车的位置
         print("width: " + str(loc[2] - loc[0]) + " height: " + str(loc[3] - loc[1]))
+        flag = False # 判断有没有找到
         for li in process_list: # 查找有没有进程在处理这辆车
-            if(True): # 如果是同一时间（cnt） 同同一地址， 这张是之前已经加入process 的了
-                visited.append(1)
-                break
-            else :
-                visited.append(0) 
-        cnt_loc = cnt_loc + 1;
+            if flag: break;
+            process_info = li.getInfo() 
+            # 不判空一定有
+            if process_info[0][0] <= img_cnt: # 第一张必须要比之前的小
+                for p : process_info: # 对于每一张 img_cnt
+                    if(p[0] == img_cnt): # 同时时间上的图片
+                        mid_cur = [(loc[2] - loc[0]), (loc[3]- loc[1])] # 当前图片中点
+                        mid_p = [(p[1][2]-p[1][0]),(p[1][3] - p[1][1])] # p的中点
+                        len_2 = (mid_p[0] - mid_cur[0])^2 + (mid_p[1] - mid_cur[1])^2 # 距离平方
+                        if(len_2 < ((loc[2] - loc[0])/ 2)^2 ):
+                             flag = True
+                             break;
+        
+        if flag: 
+            visited.append(1)
+            break;
+        else:
+            visited.append(0)      
+        cnt_loc = cnt_loc + 1; # 处理下一辆车
 
     cnt_loc = 0
     for flag in visited:
@@ -100,7 +125,7 @@ def tracking(locations, img_cnt):
             temp_thread.add_info([img_cnt, locations[cnt_loc]]) 
             temp_thread.start() # 线程里面跟踪不到了就去自动停止， 内部实现
             process_list.append(temp_thread) # 将进程加入 列表
-        cnt_loc cnt_loc + 1;
+        cnt_loc = cnt_loc + 1;
 
 def main():
     # 不可控， 会一直接受图片
@@ -112,8 +137,9 @@ def main():
         temp_cnt = img_cnt
         temp_image = image
         lock.release()
+        
         # 处理图片
-        locations = identify.idnt_img(temp_image)
+        locations = identify.idnt_img(temp_image) # 1.2 
         
         tracking(locations, temp_cnt)
         
