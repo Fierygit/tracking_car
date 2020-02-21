@@ -2,7 +2,9 @@
 @Author: Firefly
 @Date: 2020-02-20 14:39:48
 @Descripttion: 
-@LastEditTime: 2020-02-21 18:17:18
+
+@LastEditTime: 2020-02-20 22:51:34
+
 '''
 
 import get_image
@@ -21,6 +23,8 @@ class TrackingProcess(threading.Thread):
     # 数据格式：  [[img_cnt, [x1,y1,x2,y2]],  ....]
     info = list()
     first_img = bytes()
+    
+    df
     
     def __init__(self, *args, **kwargs):
         super(TrackingProcess, self).__init__(*args, **kwargs)

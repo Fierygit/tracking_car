@@ -18,5 +18,9 @@ def idnt_img(image):
 
     loc.append((1,2,3,4))
     loc.append((2,3,4,5))
-    
+
     return loc
+
+def int():
+    
+
