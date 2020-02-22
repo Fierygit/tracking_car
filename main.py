@@ -3,7 +3,7 @@
 @Date: 2020-02-20 14:39:48
 @Descripttion: 
 
-@LastEditTime: 2020-02-20 22:51:34
+@LastEditTime: 2020-02-22 10:09:53
 
 '''
 
@@ -46,19 +46,35 @@ class TrackingProcess(threading.Thread):
         return image  # 拿全局变量的图片
 
     def run(self):
-        
+        cnt = info[0]
+        location = info[1]
+        lock.acquire()
+        frame = cv2.imread(image,cv2.IMREAD_ANYCOLOR)
+        lock.release()
+        ok = tracker.init(frame, location)
         while self.__running.isSet():
             self.__flag.wait()      # 为True时立即返回, 为False时阻塞直到内部的标识位为True后返回
             
             # 调用真正的  里面不要再用  while 循环， 最后一行的 sleep 控制速率
             # 处理一张， 就重新获取一张图片
             # tracking(self.getImage())
-            print("a")
-            tracking(image, info[1])
-            info1 =  tack.update()
-            
             print("tracking process: " + self.name + " is running!")
-            self.stop()
+            lock.acquire()
+            frame = cv2.imread(image,cv2.IMREAD_ANYCOLOR)
+            lock.release()
+            ok, bbox = tracker.update(frame)
+            if ok:
+            # Tracking success
+                p1 = (int(bbox[0]), int(bbox[1]))
+                p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
+                cv2.rectangle(frame, p1, p2, (255, 0, 0), 2, 1)
+            else:
+            # Tracking failure
+                cv2.putText(frame, "Tracking failure detected", (50, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
+                # stop
+            cv2.putText(frame, " Tracker", (50, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2)
+            cv2.imshow("Tracking", frame)
+
             time.sleep(1)
 
     def pause(self):
