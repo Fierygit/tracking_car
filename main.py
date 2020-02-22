@@ -4,7 +4,7 @@
 @Descripttion: 
 @LastEditTime: 2020-02-20 17:00:06
 '''
-
+import cv2
 import get_image
 import time
 import threading
@@ -14,6 +14,7 @@ import sys
 image = bytes()
 img_cnt = 0
 lock = multiprocessing.Lock()
+tracker = cv2.TrackerKCF_create()
 #  现在处理的图片, bytes 类型
 
 class TrackingProcess(threading.Thread):
@@ -37,6 +38,12 @@ class TrackingProcess(threading.Thread):
         return image  # 那全局变量的图片
 
     def run(self):
+        cnt = info[0]
+        location = info[1]
+        lock.acquire()
+        frame = cv2.imread(image,cv2.IMREAD_ANYCOLOR)
+        lock.release()
+        ok = tracker.init(frame, location)
         while self.__running.isSet():
             self.__flag.wait()      # 为True时立即返回, 为False时阻塞直到内部的标识位为True后返回
             
@@ -45,7 +52,23 @@ class TrackingProcess(threading.Thread):
             # tracking(self.getImage())
 
             print("tracking process: " + self.name + " is running!")
-            
+            lock.acquire()
+            frame = cv2.imread(image,cv2.IMREAD_ANYCOLOR)
+            lock.release()
+            ok, bbox = tracker.update(frame)
+            if ok:
+            # Tracking success
+                p1 = (int(bbox[0]), int(bbox[1]))
+                p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
+                cv2.rectangle(frame, p1, p2, (255, 0, 0), 2, 1)
+            else:
+            # Tracking failure
+                cv2.putText(frame, "Tracking failure detected", (50, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
+                self.stop()
+                # stop
+            cv2.putText(frame, " Tracker", (50, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2)
+            cv2.imshow("Tracking", frame)
+
             time.sleep(1)
 
     def pause(self):
@@ -72,7 +95,7 @@ def update_image():
         time.sleep(1)
         # 控制速率
 
-process_list = list();
+process_list = list()
 
 def tracking(locations, img_cnt):
     
@@ -86,7 +109,7 @@ def tracking(locations, img_cnt):
                 break
             else :
                 visited.append(0) 
-        cnt_loc = cnt_loc + 1;
+        cnt_loc = cnt_loc + 1
 
     cnt_loc = 0
     for flag in visited:
@@ -98,7 +121,7 @@ def tracking(locations, img_cnt):
             temp_thread.add_info([img_cnt, locations[cnt_loc]]) 
             temp_thread.start() # 线程里面跟踪不到了就去自动停止， 内部实现
             process_list.append(temp_thread) # 将进程加入 列表
-        cnt_loc cnt_loc + 1;
+        cnt_loc = cnt_loc + 1
 
 def main():
     # 不可控， 会一直接受图片

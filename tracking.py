@@ -33,7 +33,7 @@ def getTracker(tracker_type):  #选择类型
 
     return tracker
 
-if __name__ == '__main__':
+def tracking(image):
 
     # Set up tracker.
     # Instead of MIL, you can also use
@@ -49,48 +49,44 @@ if __name__ == '__main__':
     picNum = 0
     failureNum = 0
     # Read jpg
-    for i in range(1,150):
-    #for jpgfile in glob.glob(r'E:\Semester_three_up\strawberry_pie\opencv-tracking\picture\*.jpg'):
-        
-        jpgfile = str("E:\Semester_three_up\\strawberry_pie\\opencv-tracking\picture\\" + str(i) + '.jpg')
-        print(jpgfile)
-        frame = cv2.imread(jpgfile,cv2.IMREAD_ANYCOLOR)
-        picNum = picNum + 1
-        if picNum == 1 :
-            bbox = cv2.selectROI(frame, False)   
-            ok = tracker.init(frame, bbox)
+
+    frame = cv2.imread(image,cv2.IMREAD_ANYCOLOR)
+    picNum = picNum + 1
+    if picNum == 1 :
+        bbox = cv2.selectROI(frame, False)   
+        ok = tracker.init(frame, bbox)
+    else:
+        # Start timer
+        #timer = cv2.getTickCount()
+
+        # Update tracker
+        ok, bbox = tracker.update(frame)
+
+        # Calculate Frames per second (FPS)
+        #fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
+        # Draw bounding box
+        if ok:
+            # Tracking success
+            p1 = (int(bbox[0]), int(bbox[1]))
+            p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
+            cv2.rectangle(frame, p1, p2, (255, 0, 0), 2, 1)
         else:
-            # Start timer
-            #timer = cv2.getTickCount()
+            # Tracking failure
+            cv2.putText(frame, "Tracking failure detected", (50, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
+            failureNum = failureNum + 1
 
-            # Update tracker
-            ok, bbox = tracker.update(frame)
+        # Display tracker type on frame
+        cv2.putText(frame, tracker_type + " Tracker", (50, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2)
 
-            # Calculate Frames per second (FPS)
-            #fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer);
-            # Draw bounding box
-            if ok:
-                # Tracking success
-                p1 = (int(bbox[0]), int(bbox[1]))
-                p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
-                cv2.rectangle(frame, p1, p2, (255, 0, 0), 2, 1)
-            else:
-                # Tracking failure
-                cv2.putText(frame, "Tracking failure detected", (50, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
-                failureNum = failureNum + 1
+        # Display FPS on frame
+        # cv2.putText(frame, "FPS : " + str(int(fps)), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2)
 
-            # Display tracker type on frame
-            cv2.putText(frame, tracker_type + " Tracker", (50, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
+        # Display result
+        cv2.imshow("Tracking", frame)
 
-            # Display FPS on frame
-            # cv2.putText(frame, "FPS : " + str(int(fps)), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
-
-            # Display result
-            cv2.imshow("Tracking", frame)
-
-            # Exit if ESC pressed
-            k = cv2.waitKey(10) & 0xff
-            if k == 27: break
+        # Exit if ESC pressed
+        k = cv2.waitKey(10) & 0xff
+        if k == 27: break
             
     time.sleep(1)
     print(picNum)
