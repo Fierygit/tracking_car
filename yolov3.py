@@ -19,14 +19,14 @@ inpHeight = 416      #Height of network's input image
 
         
 # Load names of classes
-classesFile = "./train/coco.names"
+classesFile = "../model/coco.names"
 classes = None
 with open(classesFile, 'rt') as f:
     classes = f.read().rstrip('\n').split('\n')
 
 # Give the configuration and weight files for the model and load the network using them.
-modelConfiguration = "./train/yolov3.cfg"
-modelWeights = "./train/yolov3.weights"
+modelConfiguration = "../model/yolov3.cfg"
+modelWeights = "../model/yolov3.weights"
 
 net = cv.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
 net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
@@ -111,7 +111,7 @@ def yolov3(image):
     winName = 'Deep learning object detection in OpenCV'
     # cv.namedWindow(winName, cv.WINDOW_NORMAL)  # 新建一个显示窗口
     cap = cv.VideoCapture(image)
-    outputFile = './image_out/' + image[:-4] + '_yolo_out_py.jpg'
+    outputFile = '../image_out/' + image[8:-4] + '_yolo_out_py.jpg'
     hasFrame, frame = cap.read()
     blob = cv.dnn.blobFromImage(frame, 1 / 255, (inpWidth, inpHeight), [0, 0, 0], 1, crop=False)
 

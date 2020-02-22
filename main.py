@@ -75,10 +75,11 @@ class TrackingProcess(threading.Thread):
 
 
 def update_image():
+    sock, conn = get_image.init_rec()
     while True:
         # 防止 更新了一个数据后， 切换到另一个线程， 倒置数据不统一
         lock.acquire()
-        image, img_cnt = get_image.get_img()  # 用锁来保护， 赋值的时候
+        image, img_cnt = get_image.get_img(sock, conn)  # 用锁来保护， 赋值的时候
         lock.release()
 
         print(len(image), img_cnt)
