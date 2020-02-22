@@ -9,19 +9,22 @@ import time
 from yolov3 import yolov3, getLocation
 import get_image
 
-def idnt_img(image):
+
+def idnt_img(image, count):
     # time.sleep(1.2)
 
     # 实现识别代码
-    yolov3(image)
-
+    yolov3(image, count)
+    
     # 二元 元组
     loc = getLocation()
     print(loc)
     return loc
 
-# idnt_img('../image/image1.jpg')
+def test():
+    sock , conn = get_image.init_rec()
+    image, ret = get_image.get_img(sock, conn)
+    idnt_img(image, 1)
 
-# sock , conn = get_image.init_rec()
-# image, ret = get_image.get_img(sock, conn)
-# idnt_img(image)
+if __name__ == "__main__":
+    test()

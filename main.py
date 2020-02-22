@@ -148,6 +148,7 @@ def main():
     thread1 = threading.Thread(target=update_image, args=())
     thread1.start()
 
+    count = 0
     while True:
         lock.acquire()
         temp_cnt = img_cnt
@@ -155,8 +156,8 @@ def main():
         lock.release()
         
         # 处理图片
-        locations = identify.idnt_img(temp_image) # 1.2 
-        
+        locations = identify.idnt_img(temp_image, count) # 1.2 
+        count += 1
         tracking(locations, temp_cnt)
         
 
