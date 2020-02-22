@@ -24,7 +24,6 @@ class TrackingProcess(threading.Thread):
     info = list()
     first_img = bytes()
     
-    df
     
     def __init__(self, *args, **kwargs):
         super(TrackingProcess, self).__init__(*args, **kwargs)
