@@ -110,9 +110,14 @@ def yolov3(image):
     del loc_info[:]
     winName = 'Deep learning object detection in OpenCV'
     # cv.namedWindow(winName, cv.WINDOW_NORMAL)  # 新建一个显示窗口
+
+    
     cap = cv.VideoCapture(image)
+    
+
     outputFile = '../image_out/' + image[8:-4] + '_yolo_out_py.jpg'
     hasFrame, frame = cap.read()
+
     blob = cv.dnn.blobFromImage(frame, 1 / 255, (inpWidth, inpHeight), [0, 0, 0], 1, crop=False)
 
     # Sets the input to the network
