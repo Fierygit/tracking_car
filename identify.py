@@ -2,7 +2,7 @@
 @Author: Firefly
 @Date: 2020-02-20 15:22:36
 @Descripttion: 
-@LastEditTime: 2020-02-20 16:37:49
+@LastEditTime: 2020-02-23 21:16:24
 '''
 
 import time
@@ -18,7 +18,7 @@ def idnt_img(image, count):
     
     # 二元 元组
     loc = getLocation()
-    print(loc)
+    print("[ identify ]" + loc)
     return loc
 
 def test():
