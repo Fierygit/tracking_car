@@ -149,16 +149,19 @@ def main():
     thread1 = threading.Thread(target=update_image, args=())
     thread1.start()
 
+    count = 0
     while True:
         lock.acquire()
         temp_cnt = img_cnt
         temp_image = image
         lock.release()
         
+
         # 处理图片, 返回图片上车的信息， 用一个list保存
         locations = identify.idnt_img(temp_image) # 1.2 
         # 创建新的线程去跟踪新的车
         tracking(temp_image, locations, temp_cnt)
+
         
 
 
