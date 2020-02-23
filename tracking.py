@@ -54,7 +54,9 @@ if __name__ == '__main__':
         
         jpgfile = str("E:\Semester_three_up\\strawberry_pie\\opencv-tracking\picture\\" + str(i) + '.jpg')
         print(jpgfile)
+
         frame = cv2.imread(jpgfile,cv2.IMREAD_ANYCOLOR)
+        
         picNum = picNum + 1
         if picNum == 1 :
             bbox = cv2.selectROI(frame, False)   

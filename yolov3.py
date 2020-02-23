@@ -113,11 +113,13 @@ def yolov3(image, count):
     del loc_info[:]
     winName = 'Deep learning object detection in OpenCV'
     # cv.namedWindow(winName, cv.WINDOW_NORMAL)  # 新建一个显示窗口
+
     # cap = cv.VideoCapture(image)
     outputFile = '../image_out/image{0}_yolov_out.jpg'.format(count)
 
     frame = plt.imread(BytesIO(image), "jpg")  # Bytes类型转为numpy.array类型
     frame = cv.cvtColor(frame, cv.COLOR_RGB2BGR)  # opencv中图片像素是以BGR方式排列
+
     blob = cv.dnn.blobFromImage(frame, 1 / 255, (inpWidth, inpHeight), [0, 0, 0], 1, crop=False)
 
     # Sets the input to the network

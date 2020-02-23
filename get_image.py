@@ -2,7 +2,7 @@
 @Author: Firefly
 @Date: 2020-02-02 12:47:49
 @Descripttion: 
-@LastEditTime: 2020-02-20 15:18:37
+@LastEditTime: 2020-02-23 20:01:26
 '''
 
 import sys
@@ -10,7 +10,7 @@ import socket
 
 
 # 先从文件中读取
-
+# 调用函数的时候可以 读取到吗？
 host = ""
 port = 8888
 
@@ -102,7 +102,7 @@ def get_img(sock, conn):
         print("\nClient disconnected! waiting......")
         conn, addr = sock.accept()
         time.sleep(0.5)
-    return  (image, 1)
+    return  image
 
 
 
