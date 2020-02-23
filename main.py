@@ -3,7 +3,7 @@
 @Date: 2020-02-20 14:39:48
 @Descripttion: 
 
-@LastEditTime: 2020-02-23 20:51:10
+@LastEditTime: 2020-02-23 21:15:51
 
 '''
 
@@ -12,6 +12,8 @@ import time
 import threading
 import identify
 import multiprocessing
+import matplotlib.pyplot as plt
+from io import BytesIO
 
 image = bytes()
 img_cnt = 0
@@ -57,10 +59,11 @@ class TrackingProcess(threading.Thread):
             # 处理一张， 就重新获取一张图片
             # tracking(self.getImage())        
             lock.acquire()
-            # 
-            frame = cv2.imread(image,cv2.IMREAD_ANYCOLOR)# 不断获取图片并更新
+            cur_image = image
             temp_cnt = img_cnt
             lock.release()
+            frame = plt.imread(BytesIO(cur_image), "jpg")  # Bytes类型转为numpy.array类型
+            frame = cv.cvtColor(frame, cv.COLOR_RGB2BGR)  # opencv中图片像素是以BGR方式排列
             ok, bbox = tracker.update(frame)
             if ok:
             # Tracking success
@@ -68,6 +71,7 @@ class TrackingProcess(threading.Thread):
                 p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
                 print("[tracking process: " + self.name + " x: " fir_loc[0] + " y: "+fir_loc[1] + "] ",end="")
                 print("track_num: " + track_cnt + ", x: " + p1[0] + ", y: " + p1[1])
+                # 保存 信息！！
                 # cv2.rectangle(frame, p1, p2, (255, 0, 0), 2, 1)
             else:
                 # 失败了， 要把自己从list中移除
@@ -112,7 +116,7 @@ def tracking(fir_img, locations, fir_img_cnt):
     visited = list()
     cnt_loc = 0
     for loc in locations:    # 对于每一个识别出来的车的位置
-        print("width: " + str(loc[2] - loc[0]) + " height: " + str(loc[3] - loc[1]))
+        print("[tracking process: "+ " width: " + str(loc[2] - loc[0]) + " height: " + str(loc[3] - loc[1]) +"]")
         flag = False # 判断有没有找到
         for li in process_list: # 查找有没有进程在处理这辆车
             if flag: break;
@@ -158,7 +162,7 @@ def main():
         
 
         # 处理图片, 返回图片上车的信息， 用一个list保存
-        locations = identify.idnt_img(temp_image) # 1.2 
+        locations = identify.idnt_img(temp_image,img_cnt) # 1.2 
         # 创建新的线程去跟踪新的车
         tracking(temp_image, locations, temp_cnt)
 

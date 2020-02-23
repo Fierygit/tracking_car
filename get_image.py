@@ -2,7 +2,7 @@
 @Author: Firefly
 @Date: 2020-02-02 12:47:49
 @Descripttion: 
-@LastEditTime: 2020-02-23 20:01:26
+@LastEditTime: 2020-02-23 21:15:01
 '''
 
 import sys
@@ -11,6 +11,7 @@ import socket
 
 # 先从文件中读取
 # 调用函数的时候可以 读取到吗？
+
 host = ""
 port = 8888
 
@@ -19,15 +20,15 @@ def init_rec():
     while 1:
         try:
             sock.bind((host, port))
-            print("Socket bind complete")
+            print("[receive process] Socket bind complete")
             break
         except socket.error:
-            print("Failed to bind")
+            print("[receive process] Failed to bind")
             time.sleep(0.5)
             continue
     sock.listen(3)
     count = 0
-    print('waiting..........')
+    print('[receive process] waiting................................')
     conn, addr = sock.accept()
     return (sock, conn)
 
@@ -83,10 +84,10 @@ def get_img(sock, conn):
                     k = 1
                 else:
                     k = 0   
-        print("\nstart receiving data")
+        print("[receive process] start receiving data")
         bytesize = conn.recv(4)
         filesize = int.from_bytes(bytesize, byteorder='little', signed=False)
-        print("image\'s size is {0}".format(filesize))
+        print("[receive process] image\'s size is {0}".format(filesize))
         recsize = 0
         while recsize < filesize:
             if filesize - recsize >= 1024:
@@ -97,9 +98,9 @@ def get_img(sock, conn):
                 data = conn.recv(1024)
                 image += data
                 recsize = filesize
-        print("receive image completed\n")
+        print("[receive process] receive image completed\n")
     except (ConnectionError, Exception):
-        print("\nClient disconnected! waiting......")
+        print("[receive process] Client disconnected! waiting..........................")
         conn, addr = sock.accept()
         time.sleep(0.5)
     return  image
