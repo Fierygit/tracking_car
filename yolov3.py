@@ -133,8 +133,8 @@ def yolov3(image, count):
 
     # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
     t, _ = net.getPerfProfile()
-    label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
-    print("[receive process] label: " label)
+    label = 'deal time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
+    print("\t\t[ identify ] " + label)
     cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 1.1, (0, 0, 255))
 
     # Write the frame with the detection boxes

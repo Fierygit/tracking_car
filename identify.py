@@ -14,11 +14,14 @@ def idnt_img(image, count):
     # time.sleep(1.2)
 
     # 实现识别代码
+    # with open('../image/image.jpg', 'rb') as f:
+    #     image = f.read()
+
     yolov3(image, count)
     
-    # 二元 元组
+    # 二元 数组
     loc = getLocation()
-    print("[ identify ]" + loc)
+    print("\t\t[ identify ]" + str(loc))
     return loc
 
 def test():
