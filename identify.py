@@ -21,7 +21,7 @@ def idnt_img(image, count):
     
     # 二元 数组
     loc = getLocation()
-    print("\t\t[ identify ]" + str(loc))
+    print("\tloc" + str(loc))
     return loc
 
 def test():

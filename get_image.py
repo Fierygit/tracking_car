@@ -20,15 +20,15 @@ def init_rec():
     while 1:
         try:
             sock.bind((host, port))
-            print("[receive process] Socket bind complete")
+            print("\t\t\t[receive process] Socket bind complete")
             break
         except socket.error:
-            print("[receive process] Failed to bind")
+            print("\t\t\t[receive process] Failed to bind")
             time.sleep(0.5)
             continue
     sock.listen(3)
     count = 0
-    print('[receive process] waiting................................')
+    print('\t\t\t[receive process] waiting................................')
     conn, addr = sock.accept()
     return (sock, conn)
 
@@ -84,7 +84,7 @@ def get_img(sock, conn):
                     k = 1
                 else:
                     k = 0   
-        print("[receive process] start receiving data", end='')
+        print("\t\t\t[receive process] start receiving data", end='')
         bytesize = conn.recv(4)
         filesize = int.from_bytes(bytesize, byteorder='little', signed=False)
         print(" image\'s size is {0}".format(filesize), end='')
