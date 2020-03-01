@@ -84,10 +84,8 @@ def get_img(sock, conn):
                     k = 1
                 else:
                     k = 0   
-        print("\t\t\t[receive process] start receiving data", end='')
         bytesize = conn.recv(4)
         filesize = int.from_bytes(bytesize, byteorder='little', signed=False)
-        print(" image\'s size is {0}".format(filesize), end='')
         recsize = 0
         while recsize < filesize:
             if filesize - recsize >= 1024:
@@ -98,7 +96,6 @@ def get_img(sock, conn):
                 data = conn.recv(1024)
                 image += data
                 recsize = filesize
-        print(" receive image completed")
     except (ConnectionError, Exception):
         print("[receive process] Client disconnected! waiting..........................")
         conn, addr = sock.accept()
